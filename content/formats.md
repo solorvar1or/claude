@@ -1,62 +1,58 @@
 # Рубрики и форматы
 
-> ⚠️ Рубрики HVA (Human vs AI) и NOTD (NO of the Day) на паузе — концепция yesbot/NO отклонена. Рубрики пересоберём под новый персонаж.
-
 Каждый пост относится к одной рубрике. В `content/posts.csv` рубрику записываем, чтобы видеть, что заходит лучше.
 
 | Код | Рубрика | Суть | Частота | Режим |
 |---|---|---|---|---|
-| HVA | **Human vs AI** | itsnot против yesbot: чья ставка сыграла. Обновление табло | 2–3 раза/нед | deadpan / degen |
-| HYPE | **Hype Check** | Громкое заявление из мира ИИ → что говорит рынок → вердикт | ежедневно | deadpan |
-| NOTD | **NO of the Day** | Одна NO-ставка дня с коротким аргументом | ежедневно | deadpan |
-| RCPT | **Receipts** | Отчёт по закрытым ставкам, плюс и минус | раз в неделю | official |
-| MOVE | **Market Move** | Рынок резко сдвинулся / крупная сделка → что это значит | по событию | deadpan |
-| LEARN | **From Zero** | Чему научился как новичок на Polymarket | 2 раза/нед | friendly |
-| AIM | **AI Markets** | Рынки о событиях ИИ (релизы моделей, компании, рейтинги) | 2–3 раза/нед | deadpan / official |
-| MEME | **Meme / Shitpost** | Шутка, мем, диалог с yesbot | 1–2 раза/нед | degen |
-| THR | **Thread** | Большой разбор | раз в 2–3 дня | thread-teacher |
+| HYPE | **Priced In?** | Громкое заявление из мира ИИ/крипты → что говорит рынок → вердикт | ежедневно | cold |
+| TAKE | **Hot Take** | Уверенное мнение против толпы по теме дня | ежедневно | degen |
+| MOVE | **Market Move** | Рынок резко сдвинулся / крупная сделка → что это значит | по событию | cold / degen |
+| CALL | **Called It** | Прогноз сыграл → скрин старого поста + результат | по событию | degen |
+| AIM | **AI Markets** | Рынки о событиях ИИ (релизы моделей, компании, рейтинги) | 2–3 раза/нед | cold / explain |
+| AUTO | **Automation** | ИИ-инструменты, боты, автоматизация: что реально работает, что мусор | 2 раза/нед | explain / degen |
+| EXPL | **How It Really Works** | Механика Polymarket/ИИ «для тех, кто читает неправильно» | 1–2 раза/нед | explain |
+| RCPT | **Receipts** | Итоги по позициям: плюсы и минусы | раз в неделю | official |
+| MEME | **Meme** | Шутка, мем про толпу/хайп | 1–2 раза/нед | degen |
+| THR | **Thread** | Большой разбор | раз в 2–3 дня | thread |
 
 ## Шаблоны
 
-### Hype Check
+### Priced In?
 ```
-[цитата/суть хайпа, коротко]
+[суть хайпа, коротко]
 
 polymarket: [X]%
 
-[1 строка аргумента]
+[1 строка вердикта]
 
-it's not.
+[not priced in. / priced in.]
 ```
 
-### Human vs AI
+### Called It
 ```
-yesbot: YES on "[рынок]" at [X]¢
-me: NO
+called this at [X]¢ on [дата].
 
-resolved: [YES/NO]
+[скрин старого поста]
 
-Human vs AI: [счёт]
+resolved [YES/NO]. [короткий подкол толпе]
 ```
 
 ### Receipts
 ```
-Receipts — Season 1, Week [N]
+Week [N] recap.
 
-Closed: [N] · Right: [N] · Wrong: [N]
-Net: [±X]%
+Closed: [N]. Right: [N]. Wrong: [N].
+Net: [±X]%.
 
-Worst call: [рынок] — [почему ошибся]
-Best call: [рынок] — [почему прав]
-
-Human vs AI: [счёт]
+Worst call: [рынок] — [коротко, уверенно]
+Best call: [рынок] — [коротко]
 ```
 
-### From Zero
+### Hot Take
 ```
-day [N] of learning polymarket from zero.
+[уверенный тезис против толпы]
 
-today's lesson: [урок в 1 строку]
+[2–3 строки аргумента: цифра / факт]
 
-[2–3 строки контекста / как я это понял]
+[пуант или фирменная фраза]
 ```
