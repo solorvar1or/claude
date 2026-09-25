@@ -9,3 +9,4 @@
 | 2026-09-25 | persona, voice, formats | Отклонены «NO на хайп» и yesbot; персонаж анонимный и выдуманный (можно по мотивам игр/аниме/фильмов); мат запрещён | Решение владельца |
 | 2026-09-25 | persona | Персонажа создаёт владелец; persona.md превращён в анкету | Решение владельца |
 | 2026-09-25 | persona, voice, slang, rules, formats, playbook | Персонаж v2 от владельца: уверенный деген (X, крипта, ИИ, автоматизация), без мата, минимум эмодзи, био «it's not hype until the market prices it in». Новый словарь slang.md, режимы degen/cold/explain/official/thread, новые рубрики, scoreboard → calls.csv | Описание персонажа от владельца |
+| 2026-09-25 | rules | Списки оформляем через `>` | Паттерн ниши (@the_smart_ape, @sopersone) |

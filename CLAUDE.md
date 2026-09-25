@@ -34,6 +34,7 @@
 - `content/drafts/` — черновики
 - `content/posts.csv` — все опубликованные посты + метрики
 - `tracking/accounts.md` — список аккаунтов, за которыми следим
+- `tracking/niche-analysis.md` — общие выводы по нише (раунды анализа)
 - `tracking/swipe/` — «копилка» чужих залетевших постов с разбором
 - `tracking/daily/` — ежедневные отчёты
 - `tracking/growth.csv` — подписчики и охваты по дням
