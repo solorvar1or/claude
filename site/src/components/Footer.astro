@@ -1,0 +1,50 @@
+---
+import R from './R.astro';
+import { site, enabledMessengers } from '../data/site';
+import { pageCategories, hubSections } from '../data/categories';
+const socials = site.socials.filter((s) => s.enabled);
+---
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__grid">
+      <div>
+        <p class="logo" style="margin-bottom:12px">{site.brand}</p>
+        <p class="small" style="color:#b9b2a6">Мебель на заказ в Витебске. Собственное производство.</p>
+        <ul>
+          <li><a href={`tel:${site.phone.tel}`} data-goal="call"><R t={site.phone.display} /></a></li>
+          {enabledMessengers().map((m) => <li><a href={m.href} data-goal="messenger">{m.label}</a></li>)}
+          <li><R t={site.email} /></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Мебель</h3>
+        <ul>
+          {pageCategories.map((c) => <li><a href={`/${c.id}/`}>{c.h1!.replace(' на заказ в Витебске', '')}</a></li>)}
+          {hubSections.filter((c) => c.confirmed).map((c) => <li><a href={`/korpusnaya-mebel/#${c.id}`}>{c.name}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h3>Компания</h3>
+        <ul>
+          <li><a href="/proekty/">Проекты</a></li>
+          <li><a href="/kak-zakazat/">Как заказать</a></li>
+          <li><a href="/raschet/">Расчёт стоимости</a></li>
+          <li><a href="/o-kompanii/">О компании</a></li>
+          <li><a href="/kontakty/">Контакты</a></li>
+          <li><a href="/kontakty/#dizajneram">Дизайнерам и архитекторам</a></li>
+          {socials.map((s) => <li><a href={s.href} rel="noopener">{s.label}</a></li>)}
+        </ul>
+      </div>
+      <div>
+        <h3>Салон</h3>
+        <p>{site.salon.full}<br /><span class="small"><R t={site.salon.hours} /></span></p>
+        <h3>Производство</h3>
+        <p>{site.production.full}</p>
+      </div>
+    </div>
+    <div class="footer__legal">
+      <span>{site.legalName}, УНП <R t={site.unp} /></span>
+      <a href="/politika-konfidencialnosti/">Политика обработки персональных данных</a>
+    </div>
+  </div>
+</footer>

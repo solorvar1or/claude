@@ -1,0 +1,9 @@
+---
+// Real photo when `src` is given, otherwise a labelled placeholder of the same ratio.
+import { plain } from '../lib/text';
+interface Props { src?: string; alt?: string; label?: string; ratio?: string; eager?: boolean; class?: string }
+const { src, alt = '', label = 'Фото', ratio = '4 / 3', eager = false, class: cls = '' } = Astro.props;
+---
+{src
+  ? <img class={`media ${cls}`} src={src} alt={plain(alt)} style={`aspect-ratio:${ratio}`} loading={eager ? 'eager' : 'lazy'} decoding="async" />
+  : <div class={`ph ${cls}`} style={`aspect-ratio:${ratio}`} role="img" aria-label={plain(alt || label)}><span>{label}</span></div>}

@@ -1,0 +1,143 @@
+---
+// About page built on proof, not slogans (architecture doc, section 6).
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Img from '../components/Img.astro';
+import R from '../components/R.astro';
+import Steps from '../components/Steps.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import SalonBlock from '../components/SalonBlock.astro';
+import { site } from '../data/site';
+import { team } from '../data/content';
+import { featuredProjects } from '../data/projects';
+
+const production = [
+  '[[Раскрой]]',
+  '[[Кромление]]',
+  '[[Присадка]]',
+  '[[Сборка / контрольная сборка]]',
+  '[[Упаковка]]',
+];
+const materials = [
+  { title: 'Корпус', text: '[[Материалы корпуса]]' },
+  { title: 'Фасады', text: '[[Материалы и покрытия фасадов]]' },
+  { title: 'Столешницы', text: '[[Варианты столешниц]]' },
+  { title: 'Фурнитура', text: '[[Производители фурнитуры]]' },
+];
+const quality = [
+  '[[Проверка замеров и проекта перед запуском в производство]]',
+  '[[Контроль деталей после раскроя и кромления]]',
+  '[[Контрольная сборка в цеху — если есть]]',
+  '[[Упаковка для перевозки]]',
+  '[[Приёмка после монтажа вместе с клиентом]]',
+];
+---
+<Base
+  title="О компании WOODGER — производство мебели в Витебске"
+  description="WOODGER — собственное производство мебели на заказ в Витебске. Цех на ул. Петруся Бровки, 22Б, салон на проспекте Победы, 15. Люди, материалы, контроль качества."
+>
+  <Breadcrumbs items={[{ name: 'О компании' }]} />
+
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <h1>О компании WOODGER</h1>
+        <p class="lead">
+          Собственное производство мебели на заказ в Витебске. Проектируем и изготавливаем кухни, шкафы, гардеробные
+          и другую корпусную мебель для квартир и домов. Цех — на ул. Петруся Бровки, 22Б, салон — на проспекте Победы, 15.
+        </p>
+        <p class="muted"><R t="[[Год основания и одна-две фразы от руководителя — если готовы указать]]" /></p>
+      </div>
+      <Img label="Видео о производстве, 60–90 сек." alt="Производство WOODGER" ratio="16 / 10" eager />
+    </div>
+  </section>
+
+  <section class="section section--dark">
+    <div class="wrap">
+      <h2>Производство</h2>
+      <p class="lead">Мебель изготавливается в нашем цеху — без посредников. Размеры, детали и качество контролируем сами.</p>
+      <p class="muted"><R t="[[Площадь цеха, оборудование — если готовы раскрывать]]" /></p>
+      <div class="grid grid--3" style="margin-top:28px">
+        {production.map((s) => (
+          <div>
+            <Img label="Фото этапа в цеху" ratio="4 / 3" />
+            <p style="margin-top:10px;font-weight:600"><R t={s} /></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2>Люди, которые сделают вашу мебель</h2>
+      <div class="grid grid--4" style="margin-top:28px">
+        {team.map((m) => (
+          <div>
+            <Img src={m.photo} label="Портрет в рабочей среде" alt={m.name} ratio="3 / 4" />
+            <p class="card__title" style="margin-top:12px"><R t={m.name} /></p>
+            <p class="card__meta"><R t={m.role} /></p>
+            <p class="small muted"><R t={m.text} /></p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Как мы работаем</h2>
+        <a class="link-arrow" href="/kak-zakazat/">Подробнее о заказе</a>
+      </div>
+      <Steps />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Материалы и фурнитура</h2>
+        <p class="lead">Из чего мы делаем мебель и почему.</p>
+      </div>
+      <div class="grid grid--2">
+        {materials.map((m) => <div class="tile"><h3>{m.title}</h3><p class="muted" style="margin:0"><R t={m.text} /></p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Контроль качества</h2>
+        <p class="lead">Что мы проверяем на каждом заказе.</p>
+        <p class="muted">Гарантия: <R t={site.guarantee} /></p>
+      </div>
+      <ul class="checks">{quality.map((q) => <li><R t={q} /></li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Наши проекты</h2>
+        <a class="link-arrow" href="/proekty/">Все проекты</a>
+      </div>
+      <div class="grid grid--3">{featuredProjects().slice(0, 3).map((p) => <ProjectCard project={p} />)}</div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap"><SalonBlock /></div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <h2 style="font-size:var(--step-1)">Реквизиты</h2>
+      <p class="muted">{site.legalName}, УНП <R t={site.unp} />. Юридический адрес: <R t={site.legalAddress} />.</p>
+      <div class="btn-row">
+        <a class="btn btn--primary" href="/raschet/" data-goal="cta_about">Обсудить проект</a>
+      </div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,168 @@
+---
+// Category landing template (architecture doc, section 3). Used for every
+// category with `page: true` except the "Корпусная мебель" hub.
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Img from '../components/Img.astro';
+import R from '../components/R.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Faq from '../components/Faq.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site, primaryMessenger } from '../data/site';
+import { pageCategories, getCategory, categoryUrl, type Category } from '../data/categories';
+import { projectsBy } from '../data/projects';
+import { faqFor, steps } from '../data/content';
+
+export function getStaticPaths() {
+  return pageCategories
+    .filter((c) => c.id !== 'korpusnaya-mebel')
+    .map((c) => ({ params: { category: c.id }, props: { cat: c } }));
+}
+
+const { cat } = Astro.props as { cat: Category };
+const projects = projectsBy([cat.id]);
+const faq = faqFor(cat.id);
+const msg = primaryMessenger();
+const short = cat.h1!.replace(' на заказ в Витебске', '').toLowerCase();
+---
+<Base title={cat.title!} description={cat.description!}>
+  <Breadcrumbs items={[{ name: cat.h1!.replace(' в Витебске', '') }]} />
+
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <h1>{cat.h1}</h1>
+        <p class="lead">{cat.lead}</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#raschet" data-goal={`cta_${cat.id}_hero`}>{cat.ctaVerb}</a>
+          <a class="btn btn--ghost" href="#proekty">Смотреть проекты</a>
+        </div>
+        <ul class="facts">
+          <li>Собственное производство в Витебске</li>
+          <li>Салон на пр. Победы, 15</li>
+          <li><R t={site.guarantee} /></li>
+        </ul>
+      </div>
+      <div class="hero__media">
+        <Img label={`Лучший проект: ${short}`} alt={cat.h1} ratio="5 / 4" eager />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface anchor-offset" id="proekty">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Проекты: {short}</h2>
+        <a class="link-arrow" href={`/proekty/?type=${cat.id}`}>Все {short} в проектах</a>
+      </div>
+      {projects.length > 0
+        ? <div class="grid grid--3">{projects.map((p) => <ProjectCard project={p} />)}</div>
+        : <p class="muted"><R t="[[Добавить реальные проекты этой категории]]" /></p>}
+    </div>
+  </section>
+
+  {cat.types && (
+    <section class="section">
+      <div class="wrap">
+        <h2>{cat.typesTitle}</h2>
+        <div class="grid grid--3" style="margin-top:28px">
+          {cat.types.map((t) => (
+            <div>
+              <Img label={`Фото из проекта: ${t.title.toLowerCase()}`} alt={t.title} ratio="4 / 3" />
+              <h3 style="margin-top:14px">{t.title}</h3>
+              <p class="muted"><R t={t.text} /></p>
+            </div>
+          ))}
+        </div>
+        <div class="btn-row" style="margin-top:28px">
+          <a class="btn btn--ghost" href="#raschet">Похожая планировка? Отправьте размеры</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {cat.materials && (
+    <section class="section section--surface">
+      <div class="wrap split split--top">
+        <div>
+          <h2>Материалы и фурнитура</h2>
+          <p class="lead">Образцы можно посмотреть и потрогать в салоне на проспекте Победы, 15.</p>
+          <a class="btn btn--ghost" href="/kontakty/#zapis" data-goal="cta_salon">Посмотреть образцы в салоне</a>
+        </div>
+        <div class="grid grid--2">
+          {cat.materials.map((m) => (
+            <div class="tile">
+              <h3>{m.title}</h3>
+              <p class="muted" style="margin:0"><R t={m.text} /></p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {cat.priceFactors && (
+    <section class="section">
+      <div class="wrap split split--top">
+        <div>
+          <h2>Сколько стоит: {short}</h2>
+          <p class="lead">Готовых цен нет — каждая вещь проектируется под помещение. Стоимость складывается из нескольких факторов:</p>
+          <p class="muted"><R t="[[Ценовые ориентиры или 2–3 примера «проект — стоимость», если WOODGER готов публиковать]]" /></p>
+          <a class="btn btn--primary" href="#raschet" data-goal={`cta_${cat.id}_price`}>Узнать стоимость моего проекта</a>
+        </div>
+        <ul class="checks">{cat.priceFactors.map((f) => <li>{f}</li>)}</ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section section--dark">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Как заказать: {short}</h2>
+        <a class="link-arrow" href="/kak-zakazat/">Подробнее о процессе</a>
+      </div>
+      <ol class="steps">
+        {steps.map((s) => <li><h3>{s.title}</h3><p class="muted"><R t={s.short} /></p></li>)}
+      </ol>
+      {cat.processNotes && (
+        <ul class="checks" style="margin-top:32px;max-width:70ch">
+          {cat.processNotes.map((n) => <li><R t={n} /></li>)}
+        </ul>
+      )}
+    </div>
+  </section>
+
+  <section class="section anchor-offset" id="raschet">
+    <div class="wrap split split--top">
+      <div>
+        <h2>{cat.ctaVerb}</h2>
+        <p class="lead">Пришлите фото помещения и примерные размеры — назовём ориентировочную стоимость.</p>
+        <p class="muted">Нет размеров? Ничего страшного — точные размеры снимет замерщик. Нужна помощь? <a href="/raschet/">Пошаговый расчёт</a>.</p>
+      </div>
+      <LeadForm mode="calc" category={cat.id} title="Расскажите о проекте" />
+    </div>
+  </section>
+
+  {faq.length > 0 && (
+    <section class="section section--surface">
+      <div class="wrap split split--top">
+        <div>
+          <h2>Вопросы: {short} на заказ</h2>
+          {msg && <p><a class="link-arrow" href={msg.href} data-goal="messenger">Задать вопрос в {msg.label}</a></p>}
+        </div>
+        <Faq items={faq} />
+      </div>
+    </section>
+  )}
+
+  {cat.related && (
+    <section class="section section--tight">
+      <div class="wrap">
+        <h2 style="font-size:var(--step-1)">Часто заказывают вместе</h2>
+        <div class="chips">
+          {cat.related.map((id) => <a class="chip" href={categoryUrl(id)}>{getCategory(id).h1?.replace(' в Витебске', '') ?? getCategory(id).name}</a>)}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>

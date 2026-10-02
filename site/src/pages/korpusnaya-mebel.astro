@@ -1,0 +1,80 @@
+---
+// Hub for "корпусная мебель Витебск" and every category that does not have
+// enough projects for its own page yet.
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Img from '../components/Img.astro';
+import R from '../components/R.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Faq from '../components/Faq.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { getCategory, hubSections, pageCategories } from '../data/categories';
+import { projectsBy } from '../data/projects';
+import { faqFor } from '../data/content';
+
+const cat = getCategory('korpusnaya-mebel');
+const mainPages = pageCategories.filter((c) => c.id !== 'korpusnaya-mebel');
+---
+<Base title={cat.title!} description={cat.description!}>
+  <Breadcrumbs items={[{ name: 'Корпусная мебель' }]} />
+
+  <section class="hero">
+    <div class="wrap">
+      <h1>{cat.h1}</h1>
+      <p class="lead">{cat.lead}</p>
+      <div class="chips" style="margin-top:24px">
+        {mainPages.map((c) => <a class="chip" href={`/${c.id}/`}>{c.h1!.replace(' в Витебске', '')}</a>)}
+        {hubSections.map((c) => <a class="chip" href={`#${c.id}`}>{c.name}</a>)}
+      </div>
+    </div>
+  </section>
+
+  {hubSections.map((c, i) => {
+    const items = projectsBy([c.id]);
+    return (
+      <section class={`section anchor-offset ${i % 2 === 0 ? 'section--surface' : ''}`} id={c.id}>
+        <div class="wrap">
+          <div class="section__head">
+            <div>
+              <h2>{c.id === 'biznes' ? 'Мебель для бизнеса' : `${c.name}: мебель на заказ`}</h2>
+              <p class="muted" style="margin:0"><R t={c.tagline} /></p>
+            </div>
+            {c.id === 'biznes'
+              ? <a class="btn btn--ghost" href="#kp">Запросить коммерческое предложение</a>
+              : <a class="link-arrow" href="#raschet">Рассчитать: {c.name.toLowerCase()}</a>}
+          </div>
+          {items.length > 0
+            ? <div class="grid grid--3">{items.map((p) => <ProjectCard project={p} />)}</div>
+            : <div class="grid grid--3"><Img label={`Фото проекта: ${c.name.toLowerCase()}`} ratio="4 / 3" /><p class="muted"><R t="[[Добавить проекты; при 3–4 проектах раздел становится отдельной страницей]]" /></p></div>}
+        </div>
+      </section>
+    );
+  })}
+
+  <section class="section anchor-offset" id="raschet">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Рассчитать мой проект</h2>
+        <p class="lead">Выберите, что нужно, и пришлите фото помещения или размеры.</p>
+      </div>
+      <LeadForm mode="calc" title="Расскажите о проекте" />
+    </div>
+  </section>
+
+  <section class="section section--surface anchor-offset" id="kp">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Для бизнеса</h2>
+        <p class="lead">Офисы, кафе, магазины. <R t="[[Работа с юрлицами по договору, безналичный расчёт — подтвердить]]" /></p>
+      </div>
+      <LeadForm mode="kp" category="biznes" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split--top">
+      <h2>Частые вопросы</h2>
+      <Faq items={faqFor('general', 6)} />
+    </div>
+  </section>
+</Base>

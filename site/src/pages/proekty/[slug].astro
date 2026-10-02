@@ -1,0 +1,140 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Img from '../../components/Img.astro';
+import R from '../../components/R.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import { projects, relatedProjects, type Project } from '../../data/projects';
+import { getCategory, categoryUrl } from '../../data/categories';
+import { plain } from '../../lib/text';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { p } }));
+}
+const { p } = Astro.props as { p: Project };
+const cat = getCategory(p.category);
+const cover = p.cover ?? p.photos[0];
+const gallery = p.photos.length ? p.photos : Array.from({ length: 5 }, () => undefined);
+const catLabel = cat.h1 ? cat.h1.replace(' в Витебске', '') : `${cat.name}: мебель на заказ`;
+---
+<Base
+  title={`${p.title} — проект WOODGER, Витебск`}
+  description={plain(`${p.title}. ${p.feature}. Задача клиента, решение, материалы и фото проекта мебельной компании WOODGER.`)}
+  ogImage={cover?.src}
+>
+  <Breadcrumbs items={[{ name: 'Проекты', href: '/proekty/' }, { name: p.title }]} />
+
+  <article>
+    <header class="section" style="padding-top:24px;padding-bottom:32px">
+      <div class="wrap">
+        {p.demo && <p class="demo-note">Демонстрационный проект: показывает структуру страницы. Замените данными реального проекта в <code>src/data/projects.ts</code>.</p>}
+        <h1>{p.title}</h1>
+        <p class="lead"><R t={p.feature} /></p>
+        <Img src={cover?.src} alt={cover?.alt ?? p.title} label="Главное фото проекта" ratio="16 / 9" eager />
+      </div>
+    </header>
+
+    <section class="section section--tight">
+      <div class="wrap split split--top">
+        <dl class="spec">
+          <dt>Объект</dt><dd>{p.object}{p.district && <>, <R t={p.district} /></>}</dd>
+          {p.facts.map((f) => <><dt>{f.label}</dt><dd><R t={f.value} /></dd></>)}
+        </dl>
+        <div class="prose">
+          <h2>Задача клиента</h2>
+          <p><R t={p.task} /></p>
+          {p.room && <><h2>Особенности помещения</h2><p><R t={p.room} /></p></>}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface">
+      <div class="wrap split split--top">
+        <div class="prose">
+          <h2>Решение</h2>
+          <p><R t={p.solution} /></p>
+        </div>
+        <Img label="Схема, чертёж или 3D (если есть)" ratio="4 / 3" />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap">
+        <h2>Материалы</h2>
+        <div class="grid grid--2" style="margin-top:24px">
+          {p.materials.map((m) => (
+            <div class="split" style="gap:20px;align-items:start">
+              <Img label="Крупный план материала" ratio="1 / 1" />
+              <div><h3><R t={m.title} /></h3><p class="muted"><R t={m.text} /></p></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface">
+      <div class="wrap">
+        <h2>Конструктивные особенности</h2>
+        <div class="grid grid--4" style="margin-top:24px">
+          {p.details.map((d) => (
+            <div>
+              <Img label="Деталь крупно" ratio="1 / 1" />
+              <p style="margin-top:10px;font-weight:600"><R t={d} /></p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    {p.process && (
+      <section class="section">
+        <div class="wrap split">
+          <Img label="Фото из цеха / монтажа этого проекта" ratio="4 / 3" />
+          <div class="prose"><h2>Как мы его делали</h2><p><R t={p.process} /></p></div>
+        </div>
+      </section>
+    )}
+
+    <section class="section section--surface">
+      <div class="wrap">
+        <h2>Результат</h2>
+        <p class="lead"><R t={p.result} /></p>
+        <div class="gallery" style="margin-top:24px">
+          {gallery.map((ph, i) => <Img src={ph?.src} alt={ph?.alt ?? `${p.title} — фото ${i + 1}`} label={`Фото результата ${i + 1}`} ratio={i === 0 ? '16 / 9' : '4 / 3'} />)}
+        </div>
+      </div>
+    </section>
+
+    {p.review && (
+      <section class="section">
+        <div class="wrap">
+          <blockquote class="quote">
+            <p><R t={p.review.text} /></p>
+            <footer><R t={p.review.author} /></footer>
+          </blockquote>
+        </div>
+      </section>
+    )}
+  </article>
+
+  <section class="section section--dark anchor-offset" id="pohozhij">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Нравится это решение?</h2>
+        <p class="lead">Пришлите размеры или фото своего помещения — рассчитаем похожий вариант под ваши размеры.</p>
+      </div>
+      <LeadForm mode="similar" category={p.category} project={plain(p.title)} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Похожие проекты</h2>
+        <a class="link-arrow" href={categoryUrl(p.category)}>{catLabel}</a>
+      </div>
+      <div class="grid grid--3">{relatedProjects(p).map((x) => <ProjectCard project={x} />)}</div>
+    </div>
+  </section>
+</Base>

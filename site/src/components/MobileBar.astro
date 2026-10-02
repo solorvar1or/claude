@@ -1,0 +1,9 @@
+---
+import { site, primaryMessenger } from '../data/site';
+const msg = primaryMessenger();
+---
+<nav class="mobile-bar" aria-label="Быстрые действия">
+  <a href={`tel:${site.phone.tel}`} data-goal="call">Позвонить</a>
+  <a href={msg?.href ?? '/kontakty/'} data-goal="messenger">Написать</a>
+  <a href="/raschet/" class="is-primary" data-goal="cta_mobile">Расчёт</a>
+</nav>

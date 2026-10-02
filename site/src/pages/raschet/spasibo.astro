@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import R from '../../components/R.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { site } from '../../data/site';
+import { featuredProjects } from '../../data/projects';
+---
+<Base title="Заявка принята | WOODGER" description="Спасибо за заявку. Мы свяжемся с вами." noindex>
+  <section class="section">
+    <div class="wrap">
+      <h1>Заявка принята</h1>
+      <p class="lead">Свяжемся с вами <R t={site.replyTime} /> — по телефону или в мессенджере, как вы выбрали.</p>
+      <h2 style="margin-top:40px">Что будет дальше</h2>
+      <ol class="steps">
+        <li><h3>Звонок или сообщение</h3><p class="muted">Уточним детали проекта и ответим на вопросы.</p></li>
+        <li><h3>Ориентировочная стоимость</h3><p class="muted">Назовём предварительную цену <R t="[[в какой срок и в каком виде]]" />.</p></li>
+        <li><h3>Замер или встреча в салоне</h3><p class="muted">Договоримся о замере или встрече на проспекте Победы, 15.</p></li>
+      </ol>
+    </div>
+  </section>
+  <section class="section section--surface">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Пока ждёте — посмотрите проекты</h2>
+        <a class="link-arrow" href="/proekty/">Все проекты</a>
+      </div>
+      <div class="grid grid--3">{featuredProjects().slice(0, 3).map((p) => <ProjectCard project={p} />)}</div>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,124 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Img from '../components/Img.astro';
+import R from '../components/R.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site, enabledMessengers } from '../data/site';
+
+const { salon, production } = site;
+const socials = site.socials.filter((s) => s.enabled);
+---
+<Base
+  title="Контакты WOODGER — салон и производство мебели в Витебске"
+  description="Салон WOODGER: Витебск, проспект Победы, 15. Производство: ул. Петруся Бровки, 22Б. Телефон, мессенджеры, режим работы, как добраться."
+>
+  <Breadcrumbs items={[{ name: 'Контакты' }]} />
+
+  <section class="section" style="padding-top:24px">
+    <div class="wrap">
+      <h1>Контакты WOODGER</h1>
+      <div class="grid grid--3" style="margin-top:28px">
+        <div class="tile">
+          <h2 style="font-size:var(--step-1)">Телефон</h2>
+          <p style="font-size:var(--step-1);font-weight:600;margin-bottom:4px"><a href={`tel:${site.phone.tel}`} data-goal="call"><R t={site.phone.display} /></a></p>
+          <p class="muted small" style="margin:0"><R t={site.workHoursCalls} /></p>
+        </div>
+        <div class="tile">
+          <h2 style="font-size:var(--step-1)">Мессенджеры</h2>
+          <div class="btn-row">
+            {enabledMessengers().map((m) => <a class="btn btn--ghost" href={m.href} data-goal="messenger">{m.label}</a>)}
+          </div>
+        </div>
+        <div class="tile">
+          <h2 style="font-size:var(--step-1)">E-mail</h2>
+          <p style="margin-bottom:4px"><R t={site.email} /></p>
+          <p class="muted small" style="margin:0">Для дизайнеров, юрлиц и больших файлов.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap split split--top">
+      <div>
+        <h2>{salon.title}</h2>
+        <p class="lead">{salon.full}</p>
+        <ul class="checks">
+          <li>Режим работы: <R t={salon.hours} /></li>
+          <li>В салоне: <R t={salon.showroom} /></li>
+          <li><R t={salon.appointment} /></li>
+          <li>Как найти: <R t={salon.hint} /></li>
+          <li>Парковка: <R t={salon.parking} /></li>
+          <li>Транспорт: <R t={salon.transport} /></li>
+        </ul>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="#zapis" data-goal="cta_salon">Записаться в салон</a>
+          <a class="btn btn--ghost" href={salon.maps.yandex} target="_blank" rel="noopener" data-goal="route">Яндекс.Карты</a>
+          <a class="btn btn--ghost" href={salon.maps.google} target="_blank" rel="noopener" data-goal="route">Google Maps</a>
+        </div>
+      </div>
+      <div class="grid" style="gap:12px">
+        <Img label="Фасад здания и вход в салон" alt="Вход в салон WOODGER, проспект Победы, 15" ratio="16 / 10" />
+        <iframe class="map" src={salon.maps.embed} title="Салон WOODGER на карте" loading="lazy"></iframe>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split--top">
+      <div>
+        <h2>{production.title}</h2>
+        <p class="lead">{production.full}</p>
+        <ul class="checks">
+          <li>Режим работы: <R t={production.hours} /></li>
+          <li><R t={production.visits} /></li>
+        </ul>
+        <p class="muted">Посмотреть образцы и обсудить проект удобнее в салоне на проспекте Победы, 15.</p>
+        <div class="btn-row">
+          <a class="btn btn--ghost" href={production.maps.yandex} target="_blank" rel="noopener" data-goal="route">Маршрут на производство</a>
+        </div>
+      </div>
+      <iframe class="map" src={production.maps.embed} title="Производство WOODGER на карте" loading="lazy"></iframe>
+    </div>
+  </section>
+
+  <section class="section section--surface anchor-offset" id="zapis">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Запись в салон</h2>
+        <p class="lead">Подберём время, чтобы специалист был на месте и подготовил образцы.</p>
+      </div>
+      <LeadForm mode="salon" />
+    </div>
+  </section>
+
+  <section class="section anchor-offset" id="vopros">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Задать вопрос</h2>
+        <p class="lead">Ответим по телефону или в мессенджере.</p>
+      </div>
+      <LeadForm mode="question" />
+    </div>
+  </section>
+
+  <section class="section section--surface anchor-offset" id="dizajneram">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Дизайнерам и архитекторам</h2>
+        <p class="lead">Изготовим мебель по вашему проекту. <R t="[[Условия сотрудничества, контакт ответственного]]" /></p>
+      </div>
+      <LeadForm mode="project" title="Отправить проект на расчёт" />
+    </div>
+  </section>
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <p class="muted small">
+        {site.legalName}, УНП <R t={site.unp} />. Юридический адрес: <R t={site.legalAddress} />.
+        {socials.map((s) => <> · <a href={s.href} rel="noopener">{s.label}</a></>)}
+      </p>
+    </div>
+  </section>
+</Base>

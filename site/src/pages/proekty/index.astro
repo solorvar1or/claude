@@ -1,0 +1,97 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import { projects } from '../../data/projects';
+import { getCategory, type CategoryId } from '../../data/categories';
+
+// Filters list only values that actually have projects.
+const typeIds = [...new Set(projects.map((p) => p.category))] as CategoryId[];
+const objects = [...new Set(projects.map((p) => p.object))];
+const firstBatch = projects.slice(0, 6);
+const rest = projects.slice(6);
+---
+<Base
+  title="Проекты — мебель на заказ в Витебске | WOODGER"
+  description="Реальные проекты WOODGER: кухни, шкафы, гардеробные и другая мебель, изготовленная на нашем производстве в Витебске. Задача, решение и материалы каждого проекта."
+>
+  <Breadcrumbs items={[{ name: 'Проекты' }]} />
+  <section class="section" style="padding-top:24px">
+    <div class="wrap">
+      <h1>Проекты WOODGER</h1>
+      <p class="lead">Реальные проекты, изготовленные на нашем производстве. В каждом — задача клиента, решение и материалы.</p>
+
+      <div class="chips" role="group" aria-label="Тип мебели" data-filter="category" style="margin-top:28px">
+        <button class="chip" type="button" aria-pressed="true" data-value="">Все</button>
+        {typeIds.map((id) => <button class="chip" type="button" aria-pressed="false" data-value={id}>{getCategory(id).name}</button>)}
+      </div>
+      {objects.length > 1 && (
+        <div class="chips" role="group" aria-label="Тип объекта" data-filter="object">
+          <button class="chip" type="button" aria-pressed="true" data-value="">Любой объект</button>
+          {objects.map((o) => <button class="chip" type="button" aria-pressed="false" data-value={o}>{o}</button>)}
+        </div>
+      )}
+
+      <div class="grid grid--3" data-projects>
+        {firstBatch.map((p) => <ProjectCard project={p} />)}
+      </div>
+      <p class="muted" data-empty hidden>Таких проектов пока нет на сайте. <a href="/raschet/">Расскажите о своей задаче</a> — покажем похожие работы при встрече.</p>
+    </div>
+  </section>
+
+  <section class="section section--tight section--surface">
+    <div class="wrap split">
+      <div>
+        <h2>Есть похожая задача?</h2>
+        <p class="lead">Пришлите фото помещения — подскажем решение и сориентируем по стоимости.</p>
+      </div>
+      <div class="btn-row"><a class="btn btn--primary" href="/raschet/" data-goal="cta_portfolio">Отправить фото помещения</a></div>
+    </div>
+  </section>
+
+  {rest.length > 0 && (
+    <section class="section">
+      <div class="wrap grid grid--3" data-projects>
+        {rest.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </section>
+  )}
+
+  <section class="section">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Не нашли похожий проект?</h2>
+        <p class="lead">Каждый проект — индивидуальный. Расскажите о своей задаче.</p>
+      </div>
+      <LeadForm mode="calc" title="Обсудить проект" submit="Обсудить проект" />
+    </div>
+  </section>
+
+  <script>
+    const state: Record<string, string> = { category: new URLSearchParams(location.search).get('type') ?? '', object: '' };
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-projects] > .card')];
+    const empty = document.querySelector<HTMLElement>('[data-empty]');
+    const apply = () => {
+      let shown = 0;
+      cards.forEach((c) => {
+        const ok = (!state.category || c.dataset.category === state.category) && (!state.object || c.dataset.object === state.object);
+        c.hidden = !ok;
+        if (ok) shown++;
+      });
+      if (empty) empty.hidden = shown > 0;
+      document.querySelectorAll<HTMLElement>('[data-filter]').forEach((g) => {
+        g.querySelectorAll<HTMLButtonElement>('button').forEach((b) =>
+          b.setAttribute('aria-pressed', String(b.dataset.value === state[g.dataset.filter!])));
+      });
+    };
+    document.querySelectorAll<HTMLElement>('[data-filter]').forEach((g) =>
+      g.addEventListener('click', (e) => {
+        const b = (e.target as HTMLElement).closest('button');
+        if (!b) return;
+        state[g.dataset.filter!] = b.dataset.value ?? '';
+        apply();
+      }));
+    apply();
+  </script>
+</Base>

@@ -1,0 +1,47 @@
+---
+import R from './R.astro';
+import { site, primaryMessenger } from '../data/site';
+import { pageCategories, hubSections } from '../data/categories';
+const path = Astro.url.pathname;
+const cur = (href: string) => (path === href || (href !== '/' && path.startsWith(href)) ? 'page' : undefined);
+const menu = pageCategories.map((c) => ({ href: `/${c.id}/`, name: c.h1!.replace(' в Витебске', '') }));
+const links = [
+  { href: '/proekty/', name: 'Проекты' },
+  { href: '/kak-zakazat/', name: 'Как заказать' },
+  { href: '/o-kompanii/', name: 'О компании' },
+  { href: '/kontakty/', name: 'Контакты' },
+];
+const msg = primaryMessenger();
+---
+<header class="header">
+  <div class="wrap header__bar">
+    <a class="logo" href="/" aria-label="WOODGER — на главную">{site.brand}</a>
+    <nav class="nav" aria-label="Основное меню">
+      <div class="nav__drop">
+        <button type="button" aria-haspopup="true">Мебель</button>
+        <div class="nav__menu">
+          {menu.map((m) => <a href={m.href} aria-current={cur(m.href)}>{m.name}</a>)}
+        </div>
+      </div>
+      {links.map((l) => <a href={l.href} aria-current={cur(l.href)}>{l.name}</a>)}
+    </nav>
+    <div class="header__contacts">
+      <a class="header__phone" href={`tel:${site.phone.tel}`} data-goal="call"><R t={site.phone.display} /></a>
+      {msg && <a class="header__msg" href={msg.href} data-goal="messenger">{msg.label}</a>}
+      <a class="btn btn--primary" href="/raschet/" data-goal="cta_header">Рассчитать проект</a>
+    </div>
+    <details class="burger">
+      <summary aria-label="Открыть меню">Меню</summary>
+      <div class="burger__panel">
+        <a href="/raschet/" class="btn btn--primary" style="margin:12px 0;border:0;color:var(--accent-ink)">Рассчитать проект</a>
+        <span class="muted small">Мебель</span>
+        <div class="sub">
+          {menu.map((m) => <a href={m.href}>{m.name}</a>)}
+          {hubSections.map((c) => <a href={`/korpusnaya-mebel/#${c.id}`}>{c.name}</a>)}
+        </div>
+        {links.map((l) => <a href={l.href}>{l.name}</a>)}
+        <a href={`tel:${site.phone.tel}`} data-goal="call"><R t={site.phone.display} /></a>
+      </div>
+    </details>
+  </div>
+</header>

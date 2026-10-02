@@ -1,0 +1,17 @@
+---
+import Img from './Img.astro';
+import R from './R.astro';
+import { projectUrl, type Project } from '../data/projects';
+import { getCategory } from '../data/categories';
+interface Props { project: Project }
+const p = Astro.props.project;
+const cover = p.cover ?? p.photos[0];
+---
+<a class="card" href={projectUrl(p)} data-category={p.category} data-object={p.object}>
+  <Img src={cover?.src} alt={cover?.alt ?? p.title} label="Фото проекта" ratio="4 / 3" />
+  <div class="card__body">
+    <p class="card__title">{p.title}</p>
+    <p class="card__meta">{getCategory(p.category).name} · {p.object}{p.demo && ' · пример'}</p>
+    <p class="card__meta"><R t={p.feature} /></p>
+  </div>
+</a>

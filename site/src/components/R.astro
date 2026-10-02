@@ -1,0 +1,6 @@
+---
+// Renders text with [[placeholder]] markers highlighted.
+import { rich } from '../lib/text';
+interface Props { t: string }
+---
+<Fragment set:html={rich(Astro.props.t)} />

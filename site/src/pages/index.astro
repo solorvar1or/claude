@@ -1,0 +1,170 @@
+---
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import R from '../components/R.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import SalonBlock from '../components/SalonBlock.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site } from '../data/site';
+import { categories, categoryUrl } from '../data/categories';
+import { featuredProjects } from '../data/projects';
+import { faqFor, reviews, reviewsSourceUrl } from '../data/content';
+
+const homeCategories = categories.filter((c) => c.id !== 'korpusnaya-mebel' && !['spalni', 'kabinety'].includes(c.id));
+const all = featuredProjects();
+// Keep full rows of three.
+const featured = all.slice(0, Math.min(6, Math.max(3, all.length - (all.length % 3))));
+---
+<Base
+  title="Мебель на заказ в Витебске — собственное производство | WOODGER"
+  description="Кухни, шкафы, гардеробные и другая мебель по индивидуальным размерам. Собственное производство в Витебске, салон на проспекте Победы, 15. Предварительный расчёт по фото и размерам."
+>
+  <!-- Блок 2. Первый экран -->
+  <section class="hero">
+    <div class="wrap hero__grid">
+      <div>
+        <h1>Мебель на заказ в Витебске</h1>
+        <p class="lead">
+          Проектируем и изготавливаем кухни, шкафы, гардеробные и другую мебель по размерам вашего помещения.
+          Собственное производство на ул. Петруся Бровки, салон на проспекте Победы, 15.
+        </p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href="/raschet/" data-goal="cta_hero">Рассчитать мой проект</a>
+          <a class="btn btn--ghost" href="/proekty/">Смотреть проекты</a>
+        </div>
+        <ul class="facts">
+          <li>Собственное производство в Витебске</li>
+          <li>Салон на пр. Победы, 15</li>
+          <li><R t={site.guarantee} /></li>
+        </ul>
+      </div>
+      <div class="hero__media">
+        <Img label="Лучший реальный проект — широкий кадр" alt="Мебель на заказ WOODGER в интерьере" ratio="5 / 4" eager />
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 3. Что мы изготавливаем -->
+  <section class="section section--surface">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Что мы изготавливаем</h2>
+        <a class="link-arrow" href="/korpusnaya-mebel/">Вся корпусная мебель</a>
+      </div>
+      <div class="grid grid--4">
+        {homeCategories.map((c) => (
+          <a class="card" href={categoryUrl(c.id)}>
+            <Img label={`Фото: ${c.name.toLowerCase()}`} alt={c.h1 ?? c.name} ratio="1 / 1" />
+            <div class="card__body">
+              <p class="card__title">{c.h1 ? c.h1.replace(' в Витебске', '') : c.name}</p>
+              <p class="card__meta"><R t={c.tagline} /></p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 4. Избранные проекты -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <div>
+          <h2>Проекты, которые мы реализовали</h2>
+          <p class="muted" style="margin:0">Каждый проект — под конкретное помещение и конкретных людей.</p>
+        </div>
+        <a class="link-arrow" href="/proekty/">Все проекты</a>
+      </div>
+      <div class="grid grid--3">
+        {featured.map((p) => <ProjectCard project={p} />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 5. Своё производство и салон -->
+  <section class="section section--dark">
+    <div class="wrap">
+      <div class="split">
+        <Img label="Видео / фото производства: цех, мастера за работой" alt="Производство мебели WOODGER в Витебске" ratio="16 / 10" />
+        <div>
+          <h2>Изготавливаем сами — в Витебске</h2>
+          <p class="lead">
+            Мебель WOODGER делается на нашем производстве на ул. Петруся Бровки, 22Б.
+            Сами отвечаем за этапы: <R t="[[перечень этапов, которые WOODGER выполняет сам]]" />.
+          </p>
+          <p class="muted">
+            В салоне на проспекте Победы, 15 можно увидеть <R t={site.salon.showroom} /> вживую и обсудить проект.
+          </p>
+          <div class="btn-row">
+            <a class="btn btn--ghost" href="/o-kompanii/">Как устроено производство</a>
+            <a class="btn btn--primary" href="/kontakty/#zapis" data-goal="cta_salon">Записаться в салон</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 6. Как проходит заказ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section__head">
+        <h2>Как мы работаем</h2>
+        <a class="link-arrow" href="/kak-zakazat/">Подробнее о заказе</a>
+      </div>
+      <Steps />
+      <div class="btn-row" style="margin-top:32px">
+        <a class="btn btn--primary" href="/raschet/" data-goal="cta_process">Начать с расчёта</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Блок 7. Отзывы — выводится только при наличии реальных отзывов -->
+  {reviews.length > 0 && (
+    <section class="section section--surface">
+      <div class="wrap">
+        <div class="section__head">
+          <h2>Что говорят клиенты</h2>
+          {reviewsSourceUrl && <a class="link-arrow" href={reviewsSourceUrl} rel="noopener" target="_blank">Все отзывы</a>}
+        </div>
+        <div class="grid grid--3">
+          {reviews.slice(0, 3).map((r) => (
+            <blockquote class="quote">
+              <p>{r.text}</p>
+              <footer>{r.author} · {r.what}{r.project && <> · <a href={r.project}>проект</a></>}</footer>
+            </blockquote>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- Блок 8. Салон -->
+  <section class="section section--surface">
+    <div class="wrap"><SalonBlock /></div>
+  </section>
+
+  <!-- Блок 9. Форма -->
+  <section class="section" id="raschet">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Начните с фото или размеров</h2>
+        <p class="lead">Не нужно готовить проект заранее. Достаточно фотографии помещения и примерных размеров — остальное уточним.</p>
+        <p class="muted">Хотите рассказать подробнее? <a href="/raschet/">Пошаговый расчёт</a> займёт пару минут.</p>
+      </div>
+      <LeadForm mode="calc" />
+    </div>
+  </section>
+
+  <!-- Блок 10. FAQ -->
+  <section class="section section--surface">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Ответы на частые вопросы</h2>
+        <p><a class="link-arrow" href="/kak-zakazat/#voprosy">Все вопросы о заказе</a></p>
+      </div>
+      <Faq items={faqFor('general', 6)} />
+    </div>
+  </section>
+</Base>

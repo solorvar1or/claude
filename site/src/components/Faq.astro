@@ -1,0 +1,21 @@
+---
+import R from './R.astro';
+import { plain } from '../lib/text';
+import type { Faq } from '../data/content';
+interface Props { items: Faq[]; schema?: boolean }
+const { items, schema = true } = Astro.props;
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: items.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: plain(f.a) } })),
+};
+---
+<div class="faq">
+  {items.map((f) => (
+    <details>
+      <summary>{f.q}</summary>
+      <div><R t={f.a} /></div>
+    </details>
+  ))}
+</div>
+{schema && <script type="application/ld+json" set:html={JSON.stringify(ld)} />}

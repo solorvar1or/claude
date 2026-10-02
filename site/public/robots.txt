@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /raschet/spasibo/
+Disallow: /send.php
+
+Sitemap: https://woodger.by/sitemap-index.xml

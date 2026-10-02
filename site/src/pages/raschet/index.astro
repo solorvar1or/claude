@@ -1,0 +1,129 @@
+---
+// Step-by-step preliminary calculation (architecture doc, section 5).
+// 3 steps + contact. Only category, name, phone and consent are required.
+// Without JS all steps are shown as one long form.
+import Base from '../../layouts/Base.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import R from '../../components/R.astro';
+import { site, enabledMessengers } from '../../data/site';
+import { formCategories } from '../../data/categories';
+
+const stages = ['Только планирую', 'Идёт ремонт', 'Ремонт закончен', 'Новостройка без отделки'];
+const when = ['Как можно скорее', 'В течение 1–2 месяцев', 'Позже', 'Пока не знаю'];
+const layouts = ['Прямая', 'Угловая', 'П-образная', 'С островом', 'Не знаю'];
+---
+<Base
+  title="Рассчитать стоимость мебели на заказ | WOODGER, Витебск"
+  description="Предварительный расчёт стоимости мебели по фото и размерам помещения. Можно прикрепить фото, чертёж или проект дизайнера. Ни к чему не обязывает."
+>
+  <Breadcrumbs items={[{ name: 'Расчёт стоимости' }]} />
+  <section class="section" style="padding-top:24px">
+    <div class="wrap split split--top">
+      <div>
+        <h1 style="font-size:var(--step-3)">Предварительный расчёт</h1>
+        <p class="lead">Несколько вопросов о проекте. Всё, кроме типа мебели и телефона, — по желанию.</p>
+        <ul class="checks">
+          <li>Можно прикрепить фото помещения, план, чертёж или проект дизайнера</li>
+          <li>Нет размеров — не страшно, точные размеры снимет замерщик</li>
+          <li>Свяжемся <R t={site.replyTime} /> и назовём ориентировочную стоимость</li>
+        </ul>
+        <p class="muted small">Удобнее обсудить голосом? <a href={`tel:${site.phone.tel}`} data-goal="call"><R t={site.phone.display} /></a></p>
+      </div>
+
+      <form class="form form--card wizard" action={site.formEndpoint} method="post" enctype="multipart/form-data" data-lead="raschet" novalidate>
+        <p class="wizard__progress" data-progress>Шаг 1 из 4</p>
+        <div class="wizard__bar"><i></i></div>
+        <input type="hidden" name="form" value="raschet" />
+        <input type="hidden" name="page" value="/raschet/" />
+        <label class="hp" aria-hidden="true">Не заполняйте это поле <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+
+        <fieldset data-step="1" data-title="Что нужно" class="is-active">
+          <legend style="font-size:var(--step-1);font-weight:600">Какая мебель нужна? <span class="req">*</span></legend>
+          <small class="muted">Можно выбрать несколько.</small>
+          <div class="choices">
+            {formCategories.map((c) => (
+              <label class="choice"><input type="checkbox" name="category[]" value={c.id} data-required-group="category" /><span>{c.name}</span></label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset data-step="2" data-title="Помещение">
+          <legend class="no-js-only" style="font-size:var(--step-1);font-weight:600">Помещение и размеры</legend>
+          <label class="field">
+            <span>Фото помещения, план, чертёж или проект</span>
+            <input type="file" name="files[]" multiple accept="image/*,.heic,.pdf,.dwg,.dxf" />
+            <small>До 10 файлов: JPG, PNG, HEIC, PDF<R t="[[, DWG — подтвердить]]" />.</small>
+            <ul class="files-list" data-files></ul>
+          </label>
+          <label class="field">
+            <span>Размеры</span>
+            <input type="text" name="sizes" placeholder="Например: стена 3,2 м, потолок 2,7 м" />
+          </label>
+          <label class="consent" style="color:var(--ink)">
+            <input type="checkbox" name="need_measure" value="Да" />
+            <span>Размеров пока нет — нужен замер</span>
+          </label>
+          <fieldset class="field" data-only="kuhni">
+            <legend>Планировка кухни</legend>
+            <div class="choices">
+              {layouts.map((l) => <label class="choice"><input type="radio" name="kitchen_layout" value={l} /><span>{l}</span></label>)}
+            </div>
+          </fieldset>
+        </fieldset>
+
+        <fieldset data-step="3" data-title="Пожелания">
+          <legend class="no-js-only" style="font-size:var(--step-1);font-weight:600">Пожелания</legend>
+          <label class="field">
+            <span>Картинка мебели, которая нравится</span>
+            <input type="file" name="files[]" multiple accept="image/*,.heic,.pdf" />
+            <ul class="files-list" data-files></ul>
+          </label>
+          <label class="field">
+            <span>Или ссылка (Pinterest, Instagram…)</span>
+            <input type="url" name="reference_url" placeholder="https://" />
+          </label>
+          <fieldset class="field">
+            <legend>Стадия ремонта</legend>
+            <div class="choices">{stages.map((s) => <label class="choice"><input type="radio" name="stage" value={s} /><span>{s}</span></label>)}</div>
+          </fieldset>
+          <fieldset class="field">
+            <legend>Когда нужна мебель</legend>
+            <div class="choices">{when.map((s) => <label class="choice"><input type="radio" name="when" value={s} /><span>{s}</span></label>)}</div>
+          </fieldset>
+          <label class="field">
+            <span>Что важно учесть</span>
+            <textarea name="message" rows="3"></textarea>
+          </label>
+        </fieldset>
+
+        <fieldset data-step="4" data-title="Контакты">
+          <legend class="no-js-only" style="font-size:var(--step-1);font-weight:600">Контакты</legend>
+          <label class="field"><span>Имя <span class="req">*</span></span><input type="text" name="name" autocomplete="given-name" required /></label>
+          <label class="field"><span>Телефон <span class="req">*</span></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+375 (__) ___-__-__" required /></label>
+          {enabledMessengers().length > 0 && (
+            <fieldset class="field">
+              <legend>Как удобнее связаться</legend>
+              <div class="choices">
+                <label class="choice"><input type="radio" name="contact_via" value="Звонок" checked /><span>Звонок</span></label>
+                {enabledMessengers().map((m) => <label class="choice"><input type="radio" name="contact_via" value={m.label} /><span>{m.label}</span></label>)}
+              </div>
+            </fieldset>
+          )}
+          <label class="field"><span>Удобное время для звонка</span><input type="text" name="call_time" placeholder="Например: после 18:00" /></label>
+          <label class="consent">
+            <input type="checkbox" name="consent" value="yes" required />
+            <span>Согласен(на) на обработку персональных данных в соответствии с <a href="/politika-konfidencialnosti/" target="_blank">политикой</a> <span class="req">*</span></span>
+          </label>
+        </fieldset>
+
+        <p class="form__error" data-error hidden></p>
+        <div class="wizard__nav">
+          <button class="btn btn--ghost" type="button" data-prev hidden>Назад</button>
+          <button class="btn btn--primary" type="button" data-next>Далее</button>
+          <button class="btn btn--primary" type="submit">Получить расчёт</button>
+        </div>
+        <p class="form__note"><R t={`Свяжемся с вами ${site.replyTime}. Ни к чему не обязывает.`} /></p>
+      </form>
+    </div>
+  </section>
+</Base>

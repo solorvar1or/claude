@@ -1,0 +1,13 @@
+---
+import R from './R.astro';
+import { steps } from '../data/content';
+interface Props { long?: boolean }
+---
+<ol class="steps">
+  {steps.map((s) => (
+    <li>
+      <h3>{s.title}</h3>
+      <p class="muted"><R t={Astro.props.long ? s.long : s.short} /></p>
+    </li>
+  ))}
+</ol>

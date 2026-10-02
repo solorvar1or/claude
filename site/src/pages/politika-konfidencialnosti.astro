@@ -1,0 +1,31 @@
+---
+// Structure only. The final text must be prepared or checked by a lawyer
+// against the Law of the Republic of Belarus "On Personal Data Protection".
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import R from '../components/R.astro';
+import { site } from '../data/site';
+---
+<Base title="Политика обработки персональных данных | WOODGER" description="Политика обработки персональных данных ООО «ВУДЖЕР».">
+  <Breadcrumbs items={[{ name: 'Политика обработки персональных данных' }]} />
+  <section class="section" style="padding-top:24px">
+    <div class="wrap prose">
+      <h1 style="font-size:var(--step-2)">Политика обработки персональных данных</h1>
+      <p class="demo-note">Черновая структура. Текст должен подготовить или проверить юрист с учётом законодательства Республики Беларусь о защите персональных данных.</p>
+      <h2>Оператор</h2>
+      <p>{site.legalName}, УНП <R t={site.unp} />, <R t={site.legalAddress} />. Контакт по вопросам обработки данных: <R t={site.email} />.</p>
+      <h2>Какие данные мы получаем</h2>
+      <p>Имя, номер телефона, предпочтительный способ связи, а также сведения и файлы, которые вы добровольно отправляете через формы на сайте (фото помещения, размеры, чертежи, комментарии).</p>
+      <h2>Цели обработки</h2>
+      <p>Связаться с вами, подготовить предварительный расчёт стоимости, записать в салон, ответить на вопрос.</p>
+      <h2>Сроки хранения</h2>
+      <p><R t="[[Срок хранения данных]]" /></p>
+      <h2>Передача третьим лицам</h2>
+      <p><R t="[[Кому передаются данные: хостинг, почта, CRM, сервисы аналитики]]" /></p>
+      <h2>Ваши права</h2>
+      <p><R t="[[Права субъекта персональных данных и порядок отзыва согласия]]" /></p>
+      <h2>Файлы cookie и аналитика</h2>
+      <p><R t="[[Какие сервисы аналитики используются: Яндекс.Метрика, Google Analytics]]" /></p>
+    </div>
+  </section>
+</Base>

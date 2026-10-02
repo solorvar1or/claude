@@ -1,0 +1,24 @@
+---
+import Img from './Img.astro';
+import R from './R.astro';
+import { site } from '../data/site';
+interface Props { title?: string; headingLevel?: 'h2' | 'h3' }
+const { title = 'Приходите в салон WOODGER' } = Astro.props;
+const s = site.salon;
+---
+<div class="split">
+  <Img label="Фото салона: вход и интерьер" alt="Салон WOODGER, Витебск, проспект Победы, 15" ratio="4 / 3" />
+  <div>
+    <h2>{title}</h2>
+    <p class="lead">{s.full}. Покажем <R t={s.showroom} /> и обсудим ваш проект.</p>
+    <ul class="checks">
+      <li>Режим работы: <R t={s.hours} /></li>
+      <li><R t={s.appointment} /></li>
+      <li>Как найти: <R t={s.hint} /></li>
+    </ul>
+    <div class="btn-row">
+      <a class="btn btn--primary" href="/kontakty/#zapis" data-goal="cta_salon">Записаться в салон</a>
+      <a class="btn btn--ghost" href={s.maps.yandex} target="_blank" rel="noopener" data-goal="route">Построить маршрут</a>
+    </div>
+  </div>
+</div>

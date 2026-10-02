@@ -1,0 +1,115 @@
+---
+// One form component for every short lead form on the site.
+// Full step-by-step calculation lives on /raschet/.
+import R from './R.astro';
+import { site, enabledMessengers } from '../data/site';
+import { formCategories, type CategoryId } from '../data/categories';
+
+type Mode = 'calc' | 'similar' | 'salon' | 'kp' | 'question' | 'project';
+interface Props {
+  mode?: Mode;
+  category?: CategoryId;
+  project?: string; // reference project title for «Хочу похожий проект»
+  title?: string;
+  text?: string;
+  submit?: string;
+  id?: string;
+}
+const { mode = 'calc', category, project, id } = Astro.props;
+
+const defaults: Record<Mode, { title: string; text: string; submit: string }> = {
+  calc: { title: 'Расскажите о своём проекте', text: 'Пришлите фото помещения, размеры или картинку мебели, которая нравится.', submit: 'Получить расчёт' },
+  similar: { title: 'Хочу похожий проект', text: 'Нравится это решение? Пришлите размеры или фото своего помещения — рассчитаем похожий вариант.', submit: 'Рассчитать похожий' },
+  salon: { title: 'Записаться в салон', text: 'Подберём удобное время, чтобы специалист был на месте.', submit: 'Записаться' },
+  kp: { title: 'Запросить коммерческое предложение', text: 'Опишите объект и сроки — подготовим предложение.', submit: 'Запросить предложение' },
+  question: { title: 'Задайте вопрос', text: 'Ответим по телефону или в мессенджере.', submit: 'Отправить' },
+  project: { title: 'Отправить проект на расчёт', text: 'Прикрепите дизайн-проект, чертёж или эскиз — рассчитаем стоимость изготовления.', submit: 'Отправить проект' },
+};
+const d = defaults[mode];
+const title = Astro.props.title ?? d.title;
+const text = Astro.props.text ?? d.text;
+const submit = Astro.props.submit ?? d.submit;
+const withFiles = mode !== 'salon';
+const askCategory = mode === 'calc' && !category;
+const uid = id ?? `f-${mode}-${Math.random().toString(36).slice(2, 7)}`;
+---
+<form class="form form--card" id={uid} action={site.formEndpoint} method="post" enctype="multipart/form-data" data-lead={mode} novalidate>
+  <div>
+    <h2 style="font-size:var(--step-2)">{title}</h2>
+    <p class="muted" style="margin:0">{text}</p>
+  </div>
+
+  <input type="hidden" name="form" value={mode} />
+  <input type="hidden" name="page" value={Astro.url.pathname} />
+  {project && <input type="hidden" name="project" value={project} />}
+  {category && <input type="hidden" name="category[]" value={category} />}
+  <label class="hp" aria-hidden="true">Не заполняйте это поле <input type="text" name="website" tabindex="-1" autocomplete="off" /></label>
+
+  {askCategory && (
+    <fieldset class="field">
+      <legend>Что нужно? <span class="req">*</span></legend>
+      <div class="choices">
+        {formCategories.map((c) => (
+          <label class="choice"><input type="checkbox" name="category[]" value={c.id} data-required-group="category" /><span>{c.name}</span></label>
+        ))}
+      </div>
+    </fieldset>
+  )}
+
+  {mode === 'kp' && (
+    <>
+      <label class="field"><span>Компания</span><input type="text" name="company" autocomplete="organization" /></label>
+      <label class="field"><span>Объект</span><input type="text" name="object" placeholder="Например: кафе на 40 мест, офис 120 м²" /></label>
+      <label class="field"><span>Срок открытия</span><input type="text" name="deadline" /></label>
+    </>
+  )}
+
+  <div class="grid grid--2" style="gap:16px">
+    <label class="field"><span>Имя <span class="req">*</span></span><input type="text" name="name" autocomplete="given-name" required /></label>
+    <label class="field"><span>Телефон <span class="req">*</span></span><input type="tel" name="phone" autocomplete="tel" inputmode="tel" placeholder="+375 (__) ___-__-__" required /></label>
+  </div>
+
+  {mode === 'salon' && (
+    <>
+      <label class="field"><span>Удобный день и время</span><input type="text" name="visit_time" placeholder="Например: суббота после 12:00" /></label>
+      <label class="field"><span>Что вас интересует</span><input type="text" name="message" placeholder="Кухня, шкаф…" /></label>
+    </>
+  )}
+
+  {mode !== 'salon' && (
+    <label class="field">
+      <span>{mode === 'question' ? 'Вопрос' : 'Комментарий'}</span>
+      <textarea name="message" rows="3" placeholder={mode === 'question' ? '' : 'Размеры, пожелания, что важно учесть'}></textarea>
+    </label>
+  )}
+
+  {withFiles && (
+    <label class="field">
+      <span>{mode === 'project' ? 'Проект или чертёж' : 'Фото, размеры, чертёж или референс'}{mode === 'project' && <span class="req"> *</span>}</span>
+      <input type="file" name="files[]" multiple accept="image/*,.heic,.pdf,.dwg,.dxf" required={mode === 'project'} />
+      <small>До 10 файлов: JPG, PNG, HEIC, PDF. Необязательно, но так расчёт будет точнее.</small>
+      <ul class="files-list" data-files></ul>
+    </label>
+  )}
+
+  {enabledMessengers().length > 0 && (
+    <fieldset class="field">
+      <legend>Как удобнее связаться</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="contact_via" value="Звонок" checked /><span>Звонок</span></label>
+        {enabledMessengers().map((m) => <label class="choice"><input type="radio" name="contact_via" value={m.label} /><span>{m.label}</span></label>)}
+      </div>
+    </fieldset>
+  )}
+
+  <label class="consent">
+    <input type="checkbox" name="consent" value="yes" required />
+    <span>Согласен(на) на обработку персональных данных в соответствии с <a href="/politika-konfidencialnosti/" target="_blank">политикой</a> <span class="req">*</span></span>
+  </label>
+
+  <p class="form__error" data-error hidden></p>
+  <div class="btn-row" style="align-items:center">
+    <button class="btn btn--primary" type="submit">{submit}</button>
+    <p class="form__note"><R t={`Свяжемся с вами ${site.replyTime}. Ни к чему не обязывает.`} /></p>
+  </div>
+</form>

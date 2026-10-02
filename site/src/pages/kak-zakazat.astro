@@ -1,0 +1,79 @@
+---
+import Base from '../layouts/Base.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import R from '../components/R.astro';
+import Steps from '../components/Steps.astro';
+import Faq from '../components/Faq.astro';
+import LeadForm from '../components/LeadForm.astro';
+import { site } from '../data/site';
+import { faqs } from '../data/content';
+
+const terms = [
+  { title: 'Замер', text: '[[Платный или бесплатный, засчитывается ли в заказ, сроки выезда]]' },
+  { title: 'Договор и оплата', text: '[[Предоплата, этапы оплаты, способы оплаты, рассрочка]]' },
+  { title: 'Сроки изготовления', text: '[[Сроки по типам мебели]]' },
+  { title: 'Доставка и монтаж', text: '[[Кто выполняет, входит ли в стоимость]]' },
+  { title: 'Гарантия', text: `${site.guarantee} [[Что покрывает и как обратиться]]` },
+  { title: 'Работа по проекту дизайнера', text: '[[Условия]]' },
+];
+const prepare = [
+  'Фото помещения с нескольких точек',
+  'Примерные размеры стен и высоту потолка',
+  'План квартиры от застройщика или обмерный план, если есть',
+  'Картинки мебели, которая нравится',
+  'Для кухни — список техники, которую хотите встроить',
+];
+---
+<Base
+  title="Как заказать мебель на заказ: этапы, сроки, оплата | WOODGER"
+  description="Как проходит заказ мебели в WOODGER: от заявки и замера до производства и монтажа. Сроки, оплата, гарантия и ответы на частые вопросы."
+>
+  <Breadcrumbs items={[{ name: 'Как заказать' }]} />
+  <section class="section" style="padding-top:24px">
+    <div class="wrap">
+      <h1>Как заказать мебель</h1>
+      <p class="lead">От первой заявки до установленной мебели — шесть этапов. Первый шаг ни к чему не обязывает.</p>
+      <div style="margin-top:40px"><Steps long /></div>
+      <div class="btn-row" style="margin-top:32px">
+        <a class="btn btn--primary" href="/raschet/" data-goal="cta_process">Начать с расчёта</a>
+        <a class="btn btn--ghost" href="/kontakty/#zapis" data-goal="cta_salon">Записаться в салон</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--surface">
+    <div class="wrap">
+      <h2>Условия</h2>
+      <div class="grid grid--3" style="margin-top:24px">
+        {terms.map((t) => <div class="tile"><h3>{t.title}</h3><p class="muted" style="margin:0"><R t={t.text} /></p></div>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Что подготовить для расчёта</h2>
+        <p class="lead">Ничего из этого не обязательно — но чем больше информации, тем точнее предварительная цена.</p>
+      </div>
+      <ul class="checks">{prepare.map((p) => <li>{p}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section section--surface anchor-offset" id="voprosy">
+    <div class="wrap split split--top">
+      <h2>Частые вопросы</h2>
+      <Faq items={faqs} />
+    </div>
+  </section>
+
+  <section class="section anchor-offset" id="proekt">
+    <div class="wrap split split--top">
+      <div>
+        <h2>Уже есть проект или чертёж?</h2>
+        <p class="lead">Пришлите его — рассчитаем стоимость изготовления.</p>
+      </div>
+      <LeadForm mode="project" />
+    </div>
+  </section>
+</Base>

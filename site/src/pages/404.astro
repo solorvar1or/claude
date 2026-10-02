@@ -1,0 +1,18 @@
+---
+import Base from '../layouts/Base.astro';
+import { pageCategories } from '../data/categories';
+---
+<Base title="Страница не найдена | WOODGER" description="Страница не найдена." noindex>
+  <section class="section">
+    <div class="wrap">
+      <h1>Страница не найдена</h1>
+      <p class="lead">Возможно, она переехала. Вот куда можно перейти:</p>
+      <div class="chips">
+        <a class="chip" href="/proekty/">Проекты</a>
+        {pageCategories.map((c) => <a class="chip" href={`/${c.id}/`}>{c.h1!.replace(' в Витебске', '')}</a>)}
+        <a class="chip" href="/kontakty/">Контакты</a>
+      </div>
+      <a class="btn btn--primary" href="/raschet/">Рассчитать мой проект</a>
+    </div>
+  </section>
+</Base>
